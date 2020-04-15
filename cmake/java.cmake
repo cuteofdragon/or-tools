@@ -76,7 +76,7 @@ endif()
 
 # Swig wrap all libraries
 set(OR_TOOLS_JAVA com.google.ortools)
-foreach(SUBPROJECT IN ITEMS algorithms graph linear_solver constraint_solver sat data)
+foreach(SUBPROJECT IN ITEMS algorithms graph linear_solver constraint_solver sat util)
   add_subdirectory(ortools/${SUBPROJECT}/java)
   target_link_libraries(jniortools PRIVATE java_${SUBPROJECT})
 endforeach()
