@@ -10,7 +10,7 @@ swig_add_library(java_constraint_solver
   OUTPUT_DIR ${PROJECT_BINARY_DIR}/java/com/google/${PROJECT_NAME}/constraintsolver
   SOURCES routing.i)
 
-#target_include_directories(java_constraint_solver PRIVATE ${JAVA_INCLUDE_DIRS})
+target_include_directories(java_constraint_solver PRIVATE ${JNI_INCLUDE_DIRS})
 set_target_properties(java_constraint_solver PROPERTIES
   SWIG_USE_TARGET_INCLUDE_DIRECTORIES ON
   POSITION_INDEPENDENT_CODE ON)
