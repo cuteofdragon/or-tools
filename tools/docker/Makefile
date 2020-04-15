@@ -197,17 +197,17 @@ $(foreach stage,$(STAGES),$(eval $(call make-stage-target,$(stage))))
 targets = $(addsuffix _archive, $(DISTROS))
 .PHONY: archives $(targets)
 archives: $(targets)
-$(targets): %_archive: export/archives/$(IMAGE)_%_v$(OR_TOOLS_VERSION).tar.gz
+$(targets): %_archive: export/archives/or-tools_%_v$(OR_TOOLS_VERSION).tar.gz
 
-export/archives/$(IMAGE)_%_v$(OR_TOOLS_VERSION).tar.gz: %_build | export/archives
-	-rm -f export/archives/$(IMAGE)_$*_v*.tar.gz
-	-rm -f export/archives/$(IMAGE)_flatzinc_$*_v*.tar.gz
+export/archives/or-tools_%_v$(OR_TOOLS_VERSION).tar.gz: %_build | export/archives
+	-rm -f export/archives/or-tools_$*_v*.tar.gz
+	-rm -f export/archives/or-tools_flatzinc_$*_v*.tar.gz
 	$(DOCKER_RUN_CMD) -w /root/or-tools -v `pwd`/export:/export $(IMAGE):$*_build /bin/sh -c \
  "make archive && make test_archive && cp *.tar.gz /export/$*"
 	$(DOCKER_RUN_CMD) -w /root/or-tools -v `pwd`/export:/export $(IMAGE):$*_build /bin/sh -c \
  "make fz_archive && make test_fz_archive && cp *.tar.gz /export/$*"
-	mv export/$*/$(IMAGE)_flatzinc_*.tar.gz export/archives/$(IMAGE)_flatzinc_$*_v$(OR_TOOLS_VERSION).tar.gz
-	mv export/$*/$(IMAGE)_*.tar.gz export/archives/$(IMAGE)_$*_v$(OR_TOOLS_VERSION).tar.gz
+	mv export/$*/or-tools_flatzinc_*.tar.gz export/archives/or-tools_flatzinc_$*_v$(OR_TOOLS_VERSION).tar.gz
+	mv export/$*/or-tools_*.tar.gz export/archives/or-tools_$*_v$(OR_TOOLS_VERSION).tar.gz
 
 # generic rule export/% prevent other rules
 # e.g. export/%/docker.devel.tar -> need an exhaustive list
@@ -227,7 +227,7 @@ $(targets): %_test_cc: test/%/cc.Dockerfile %_archive
 		--tag $(IMAGE):$*_cc \
 		-f $< \
 		export/archives
-	$(DOCKER_RUN_CMD) $(IMAGE):$*_cc /bin/sh -c "cd $(IMAGE)_*_v* && make test_cc"
+	$(DOCKER_RUN_CMD) $(IMAGE):$*_cc /bin/sh -c "cd or-tools_*_v* && make test_cc"
 	@date > $@
 
 targets = $(addsuffix _test_java, $(DISTROS))
@@ -239,7 +239,7 @@ $(targets): %_test_java: test/%/java.Dockerfile %_archive
 		--tag $(IMAGE):$*_java \
 		-f $< \
 		export/archives
-	$(DOCKER_RUN_CMD) $(IMAGE):$*_java /bin/sh -c "cd $(IMAGE)_*_v* && make test_java"
+	$(DOCKER_RUN_CMD) $(IMAGE):$*_java /bin/sh -c "cd or-tools_*_v* && make test_java"
 	@date > $@
 
 targets = $(addsuffix _test_dotnet, $(DISTROS))
@@ -251,7 +251,7 @@ $(targets): %_test_dotnet: test/%/dotnet.Dockerfile %_archive
 		--tag $(IMAGE):$*_dotnet \
 		-f $< \
 		export/archives
-	$(DOCKER_RUN_CMD) $(IMAGE):$*_dotnet /bin/sh -c "cd $(IMAGE)_*_v* && make test_dotnet"
+	$(DOCKER_RUN_CMD) $(IMAGE):$*_dotnet /bin/sh -c "cd or-tools_*_v* && make test_dotnet"
 	@date > $@
 
 targets = $(addsuffix _test, $(DISTROS))
@@ -270,8 +270,8 @@ $(targets): clean_%: $(addprefix clean_%_, $(STAGES))
 	docker image rm -f ${IMAGE}:$*_java 2>/dev/null
 	docker image rm -f ${IMAGE}:$*_dotnet 2>/dev/null
 	-rmdir cache/$*
-	-rm -f export/archives/$(IMAGE)_flatzinc_$*_v*.tar.gz
-	-rm -f export/archives/$(IMAGE)_$*_v*.tar.gz
+	-rm -f export/archives/or-tools_flatzinc_$*_v*.tar.gz
+	-rm -f export/archives/or-tools_$*_v*.tar.gz
 	-rm -f export/$*/or-tools.snk
 	-rmdir export/$*
 
